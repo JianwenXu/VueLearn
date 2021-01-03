@@ -4,7 +4,21 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+
+    <!-- 全局状态访问 -->
+    <p @click="$store.commit('add')">
+      {{ $store.state.count }}
+    </p>
+    <p @click="$store.dispatch('add')">
+      {{ $store.state.count }}
+    </p>
+    <p>
+      doubleCount {{ $store.getters.doubleCount }}
+      <br />
+      <!-- specialCount {{ $store.getters.specialCount }} -->
+    </p>
+
+    <router-view />
   </div>
 </template>
 

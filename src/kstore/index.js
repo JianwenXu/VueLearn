@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex from './kvuex'
 
 Vue.use(Vuex)
 
@@ -23,12 +23,12 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    doubleCount: (state) => {
+    doubleCount: function(state) {
       return state.count * 2;
-    },
-    specialCount: (state, getters) => {
-      return getters.doubleCount - 1;
     }
+    // specialCount: (state, getters) => {
+    //   return getters.doubleCount - 1;
+    // }
   },
   modules: {
   }
