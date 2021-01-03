@@ -1,3 +1,4 @@
+
 let Vue;
 
 class Store {
@@ -7,11 +8,9 @@ class Store {
     this._actions = options.actions || {};
     this._getters = options.getters || {};
 
-    const computed = {};
+    let computed = {};
     Object.keys(this._getters).forEach(key => {
-      computed[key] = function () {
-        return this._getters[key].call(this, this.state)
-      }
+      computed[key] = this._getters[key].bind(this, options.state)
     });
 
     // 2. 保存一个响应式的状态
@@ -29,7 +28,6 @@ class Store {
 
   }
   get state() {
-    console.log(this._vm);
     return this._vm._data.$$state;
   }
 
@@ -38,8 +36,7 @@ class Store {
   }
 
   get getters() {
-    console.log(222, this._vm.$options.computed)
-    return this._vm.$options.computed;
+    return this._vm;
   }
 
   commit(type, payload) {
