@@ -25,10 +25,10 @@ export default new Vuex.Store({
   getters: {
     doubleCount: function(state) {
       return state.count * 2;
+    },
+    specialCount: (state, getters) => {
+      return getters.doubleCount - 1;
     }
-    // specialCount: (state, getters) => {
-    //   return getters.doubleCount - 1;
-    // }
   },
   modules: {
   }

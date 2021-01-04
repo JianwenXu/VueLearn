@@ -6,11 +6,13 @@ class Store {
     // 1. 保存选项
     this._mutations = options.mutations || {};
     this._actions = options.actions || {};
-    this._getters = options.getters || {};
 
     let computed = {};
-    Object.keys(this._getters).forEach(key => {
-      computed[key] = this._getters[key].bind(this, options.state)
+    const that = this;
+    Object.keys(options.getters).forEach(key => {
+      computed[key] = function () {
+        return options.getters[key](that.state, that.getters);
+      }
     });
 
     // 2. 保存一个响应式的状态

@@ -15,7 +15,7 @@
     <p>
       doubleCount {{ $store.getters.doubleCount }}
       <br />
-      <!-- specialCount {{ $store.getters.specialCount }} -->
+      specialCount {{ $store.getters.specialCount }}
     </p>
 
     <router-view />
