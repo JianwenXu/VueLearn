@@ -60,16 +60,16 @@ class Observer {
   }
 }
 
-function proxy(vm) {
+function proxy(vm, vmKey) {
   // TODO 真正使用的时候这里可能需要做一些边界判断
   // 比如说这个 key 是不是已经占用了什么的 
-  Object.keys(vm.$data).forEach(key => {
+  Object.keys(vm['$' + vmKey]).forEach(key => {
     Object.defineProperty(vm, key, {
       get: function () {
-        return vm.$data[key]
+        return vm['$' + vmKey][key]
       },
       set: function (v) {
-        vm.$data[key] = v
+        vm['$' + vmKey][key] = v
       }
     })
   })
@@ -80,6 +80,7 @@ class KVue {
     // 1.保存选项
     this.$options = options
     this.$data = options.data
+    this.$methods = options.methods
 
     // 2.响应式处理
     // Vue 里面有哪些响应式数据: data, props, computed, watch
@@ -87,7 +88,8 @@ class KVue {
     observe(this.$data)
 
     // 3. 为了让用户方便，代理 $data 到 KVue 实例
-    proxy(this)
+    proxy(this, 'data');
+    proxy(this, 'methods');
 
     // 4. 编译
     new Compile(options.el, this)
@@ -142,14 +144,14 @@ class Compile {
   }
 
   // 更新函数
-  update(node, exp, dir) {
+  update(node, exp, dir, params) {
     // init
     const fn = this[dir + 'Updater'];
-    fn && fn(node, this.$vm[exp]);
+    fn && fn(node, this.$vm[exp], params, exp);
 
     // update: 创建 watcher
     new Watcher(this.$vm, exp, function (val) {
-      fn && fn(node, val);
+      fn && fn(node, val, params, exp);
     })
   }
 
@@ -163,15 +165,29 @@ class Compile {
     node.textContent = val
   }
 
-  htmlUpdater(node, val) {
+  htmlUpdater = (node, val) => {
     node.innerHTML = val;
+  }
+
+  onUpdater = (node, val, params) => {
+    node['on' + params] =val.bind(this.$vm);
+  }
+
+  bindUpdater = (node, val, params) => {
+    node[params] = val;
+  }
+
+  modelUpdater = (node, val, _, exp) => {
+    this.bindUpdater(node, val, 'value')
+    this.onUpdater(node, function (e) {
+      this[exp] = e.target.value;
+    }, 'input');
   }
 
   // 处理元素所有的动态属性
   compileElement(node) {
     // node.attributes 是一个类数组
     Array.from(node.attributes).forEach(attr => {
-      // console.log(attr.name, attr.value);
       const attrName = attr.name;
       const exp = attr.value
 
@@ -179,8 +195,11 @@ class Compile {
       if (this.isDir(attrName)) {
         // 执行指令处理函数
         // k-text 关心的是 text
-        const dir = attrName.substring(2)
-        this[dir] && this[dir](node, exp)
+        const [, dir, , params] = attrName.match(/^k-(\w+)(:(\w+))?$/)
+        // const dir = attrName.substring(2)
+        // 处理指令后面的参数
+        
+        this[dir] && this[dir](node, exp, params)
       }
     })
   }
@@ -193,10 +212,22 @@ class Compile {
   html(node, exp) {
     this.update(node, exp, 'html')
   }
+
+  on(node, exp, params) {
+    this.update(node, exp, 'on', params)
+  }
+
+  bind(node, exp, params) {
+    this.update(node, exp, 'bind', params);
+  }
+
+  model(node, exp) {
+    this.update(node, exp, 'model')
+  }
 }
 
 // 为了简化
-const watchers = [];
+// const watchers = [];
 
 // 小秘书
 class Watcher {
