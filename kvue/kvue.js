@@ -3,9 +3,14 @@ function defineReactive(obj, key, val) {
   // 递归的处理 val,这样就可以处理值为对象的值
   observe(val)
 
+  // Dep 在这里创建
+  const dep = new Dep();
+
   Object.defineProperty(obj, key, {
     get: function () {
       console.log('get', key);
+      // 依赖收集
+      Dep.target && dep.addDep(Dep.target);
       return val;
     },
     set: function (v) {
@@ -16,7 +21,8 @@ function defineReactive(obj, key, val) {
 
         val = v;
 
-        watchers.forEach(w =>w.update())
+        // watchers.forEach(w =>w.update())
+        dep.notify()
       }
       
     }
@@ -199,10 +205,30 @@ class Watcher {
     this.key = key;
     this.updateFn = updateFn
 
-    watchers.push(this)
+    // watchers.push(this)
+    // 读取一下 key 的值，触发其 get 从而收集依赖
+    Dep.target = this;
+    this.vm[this.key];
+    Dep.target = null;
   }
 
   update() {
     this.updateFn.call(this.vm, this.vm[this.key])
+  }
+}
+
+// 依赖，和响应式对象的每个 key 一一对应
+class Dep {
+  constructor() {
+    this.deps = []
+  }
+
+  // 订阅的过程
+  addDep(dep) {
+    this.deps.push(dep)
+  }
+
+  notify() {
+    this.deps.forEach(dep => dep.update());
   }
 }
