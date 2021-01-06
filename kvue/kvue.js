@@ -15,7 +15,10 @@ function defineReactive(obj, key, val) {
         observe(v);
 
         val = v;
+
+        watchers.forEach(w =>w.update())
       }
+      
     }
   })
 }
@@ -132,9 +135,30 @@ class Compile {
     return attr.startsWith('k-')
   }
 
+  // 更新函数
+  update(node, exp, dir) {
+    // init
+    const fn = this[dir + 'Updater'];
+    fn && fn(node, this.$vm[exp]);
+
+    // update: 创建 watcher
+    new Watcher(this.$vm, exp, function (val) {
+      fn && fn(node, val);
+    })
+  }
+
   // 编译文本
   compileText(node) {
-    node.textContent = this.$vm[RegExp.$1]
+    this.update(node, RegExp.$1, 'text');
+  }
+
+  // 真正的实操方法
+  textUpdater(node, val) {
+    node.textContent = val
+  }
+
+  htmlUpdater(node, val) {
+    node.innerHTML = val;
   }
 
   // 处理元素所有的动态属性
@@ -157,10 +181,28 @@ class Compile {
 
   // k-text 处理函数
   text(node, exp) {
-    node.textContent = this.$vm[exp]
+    this.update(node, exp, 'text')
   }
 
   html(node, exp) {
-    node.innerHTML = this.$vm[exp];
+    this.update(node, exp, 'html')
+  }
+}
+
+// 为了简化
+const watchers = [];
+
+// 小秘书
+class Watcher {
+  constructor(vm, key, updateFn) {
+    this.vm = vm;
+    this.key = key;
+    this.updateFn = updateFn
+
+    watchers.push(this)
+  }
+
+  update() {
+    this.updateFn.call(this.vm, this.vm[this.key])
   }
 }
