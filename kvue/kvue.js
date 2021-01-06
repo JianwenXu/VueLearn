@@ -79,5 +79,88 @@ class KVue {
 
     // 3. 为了让用户方便，代理 $data 到 KVue 实例
     proxy(this)
+
+    // 4. 编译
+    new Compile(options.el, this)
+  }
+}
+
+class Compile {
+  // el 是宿主
+  // vm 是 KVue 实例
+  constructor(el, vm) {
+    // 1. 保存一下
+    this.$vm = vm;
+    this.$el = document.querySelector(el);
+
+    // 遍历
+    this.compile(this.$el)
+  }
+
+  compile(el) {
+    // 遍历 el DOM 树
+    el.childNodes.forEach(node => {
+      if (this.isElement(node)) {
+        // element
+        // 需要处理属性和子节点
+        // console.log('编译元素', node.nodeName);
+        this.compileElement(node);
+
+        // 递归处理子节点
+        if (node.childNodes && node.childNodes.length > 0) {
+          this.compile(node);
+        }
+      } else if (this.isInter(node)) {
+        // 编译插值表达式
+        // console.log('编译插值表达式', node.textContent);
+        // 获取表达式的值并赋值给 node
+        this.compileText(node);
+      }
+    })
+
+  }
+
+  isElement(node) {
+    return node.nodeType === 1;
+  }
+
+  isInter(node) {
+    return node.nodeType === 3 && /\{\{(.*)\}\}/.test(node.textContent)
+  }
+
+  isDir(attr) {
+    return attr.startsWith('k-')
+  }
+
+  // 编译文本
+  compileText(node) {
+    node.textContent = this.$vm[RegExp.$1]
+  }
+
+  // 处理元素所有的动态属性
+  compileElement(node) {
+    // node.attributes 是一个类数组
+    Array.from(node.attributes).forEach(attr => {
+      // console.log(attr.name, attr.value);
+      const attrName = attr.name;
+      const exp = attr.value
+
+      // 判断是否是一个指令
+      if (this.isDir(attrName)) {
+        // 执行指令处理函数
+        // k-text 关心的是 text
+        const dir = attrName.substring(2)
+        this[dir] && this[dir](node, exp)
+      }
+    })
+  }
+
+  // k-text 处理函数
+  text(node, exp) {
+    node.textContent = this.$vm[exp]
+  }
+
+  html(node, exp) {
+    node.innerHTML = this.$vm[exp];
   }
 }
