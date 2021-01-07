@@ -204,6 +204,8 @@ class Compile {
         
         this[dir] && this[dir](node, exp, params)
       }
+
+      // event 单独解析来实现点击事件，重点就是 this 的绑定
     })
   }
 
