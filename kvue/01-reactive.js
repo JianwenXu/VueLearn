@@ -2,6 +2,22 @@
 
 // 将传入的obj,动态的设置一个 key ，它的值是 val
 
+// 数组响应式
+// 1.替换数组原型中的的7个方法
+const originProto = Array.prototype;
+// 备份一下，修改备份
+const arrayProto = Object.create(originProto);
+// ['push', 'pop', 'shift', 'unshift', 'splice', 'reverse', 'sort']
+['push', 'pop', 'shift', 'unshift', 'splice', 'reverse', 'sort'].forEach(method => {
+  arrayProto[method] = function() {
+    // 原始操作
+    originProto[method].apply(this, arguments)
+    // 覆盖操作: 通知更新
+    console.log('数组执行', method, '操作:');
+  }
+})
+
+// 对象响应式
 // 这是一个闭包
 function defineReactive(obj, key, val) {
   
@@ -30,9 +46,21 @@ function observe(obj) {
   if (typeof obj !== 'object' || obj == null) {
     return obj
   }
-  Object.keys(obj).forEach(key => {
-    defineReactive(obj, key, obj[key])
-  })
+
+  // 判断传入的obj 类型
+  if (Array.isArray(obj)) {
+    // 覆盖原型，替换7个变更操作
+    obj.__proto__ = arrayProto;
+    // 对数组内部的元素执行响应化
+    const keys = Object.keys(obj)
+    for(let i = 0; i < obj.length; i++) {
+      observe(obj[i])
+    }
+  } else {
+    Object.keys(obj).forEach(key => {
+      defineReactive(obj, key, obj[key])
+    })
+  }
 }
 
 function set(obj, key, val) {
@@ -44,7 +72,8 @@ const obj = {
   bar: 'bar',
   baz: {
     a: 1
-  }
+  },
+  arr: [1, 2, 3]
 };
 // 这样写不友好，用 observe 方法遍历一下，提供更好的API
 // defineReactive(obj, 'foo', 'foo');
@@ -65,3 +94,5 @@ set(obj, 'dong', 'dong')
 
 obj.dong = 'dong1'
 obj.dong
+
+obj.arr.push(4)

@@ -47,6 +47,9 @@ class Observer {
     // 判断对象类型
     if (Array.isArray(obj)) {
       // TODO
+      // 找到数组的原型
+      // 覆盖那些能够修改数组的更新方法，使其可以通知更新
+      // 将得到的新的原型设置到数组实例原型上
     } else {
       this.walk(obj)
     }
