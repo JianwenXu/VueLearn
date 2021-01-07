@@ -203,8 +203,19 @@ class Compile {
         // 处理指令后面的参数
         
         this[dir] && this[dir](node, exp, params)
+
+        // 官方答案： 
+        // k-model 和 isDir 走相同的逻辑
+        // 实现 model
+        // 1、model 里面走常规的 modelUpdater
+        // 2. 在 model 方法里面单独的处理 eventListener
+        // (监听的事件根据 input type 的类型不同会有不同，有的是input， 有的是 change 等)
+        //
+        // 和 modelUpdater
+        // 常规赋值操作： node.value = value
       }
 
+      // 官方答案:
       // event 单独解析来实现点击事件，重点就是 this 的绑定
     })
   }
