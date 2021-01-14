@@ -7,11 +7,17 @@
       counter: 1
     },
     // 这个简单的例子就写 render 简单化处理
-    render() {
+    render(h) {
       // 先简单粗暴写一个简版的
-      const p = document.createElement('p');
-      p.textContent = this.counter;
-      return p;
+      // const p = document.createElement('p');
+      // p.textContent = this.counter;
+      // return p;
+
+      // 升级 返回 vnode
+      // 第三个参数整成字符串，简单化处理
+      // return h('p', null, this.counter + '')
+      // 嵌套的情况
+      return h('div', null, [h('p', null, this.counter + ''), h('p', null, this.counter * 2 + '')])
     }
   })
   setInterval(() => {
