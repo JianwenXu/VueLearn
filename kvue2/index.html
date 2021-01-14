@@ -1,0 +1,21 @@
+<div id="app"></div>
+<script src="./kvue2.js"></script>
+<script>
+  const app = new KVue({
+    el: '#app',
+    data: {
+      counter: 1
+    },
+    // 这个简单的例子就写 render 简单化处理
+    render() {
+      // 先简单粗暴写一个简版的
+      const p = document.createElement('p');
+      p.textContent = this.counter;
+      return p;
+    }
+  })
+  setInterval(() => {
+    app.counter++
+  }, 1000);
+
+</script>

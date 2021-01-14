@@ -70,34 +70,70 @@ class KVue {
     proxy(this, '$data')
     // 3.编译模板
     // new Compile('#app', this)
+    // $mount(options.el);
+    if (options.el) {
+      this.$mount(options.el)
+    }
+  }
+
+  // 转换 vnode 为 dom
+  $mount(el) {
+    // 1.获取宿主
+    this.$el = document.querySelector(el)
+
+    // 2. updateComponent
+    const updateComponent = () => {
+      const { render } = this.$options;
+      const el = render.call(this)
+      const parent = this.$el.parentElement
+      parent.insertBefore(el, this.$el.nextSibling)
+      parent.removeChild(this.$el)
+      this.$el = el
+    };
+
+    // 3. Watcher 实例创建 ---- 当前的 vue 实例一个 watcher 就够了
+    new Watcher(this, updateComponent)
+
   }
 }
 // 移除
 // class Compile {}
 class Watcher {
-  constructor(vm, key, updaterFn) {
+  constructor(vm, updaterFn) {
     this.vm = vm
-    this.key = key
-    this.updaterFn = updaterFn
+
+    this.getter = updaterFn
+
+    // 首次调用
+    this.get()
+  }
+
+  get() {
     // 依赖收集触发
     Dep.target = this
-    this.vm[this.key]
+    // 为啥这样做依赖收集，这样不就执行了吗
+    // updateComponet => render => data[key]
+    this.getter.call(this.vm);
     Dep.target = null
   }
+
   update() {
-    this.updaterFn.call(this.vm, this.vm[this.key])
+    this.get()
   }
+
 }
 // 管家：和某个key，⼀⼀对应，管理多个秘书，数据更新时通知他们做更新⼯作
 class Dep {
   constructor() {
-    this.deps = []
+    // 改成 set 保证 watcher 不重
+    this.deps = new Set()
   }
 
   addDep(watcher) {
-    this.deps.push(watcher)
+    this.deps.add(watcher)
   }
   notify() {
+    // set 也有 forEach 方法
     this.deps.forEach(watcher => watcher.update())
   }
 }
