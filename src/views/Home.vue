@@ -1,18 +1,63 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h2>自定义 table 组件</h2>
+    <KTable
+      :data="tableData"
+      style="width: 100%"
+    >
+      <KTableColumn
+        prop="date"
+        label="日期"
+        width="180">
+      </KTableColumn>
+      <KTableColumn
+        prop="name"
+        label="姓名"
+        width="180">
+      </KTableColumn>
+      <KTableColumn
+        prop="address"
+        label="地址">
+      </KTableColumn>
+    </KTable>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import KTable from '@/components/table/index.vue';
+import KTableColumn from '@/components/table/column.vue';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
-  }
+    KTable,
+    KTableColumn
+  },
+  data() {
+    return {
+      tableData: [{
+        id: 1,
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        id: 2,
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        id: 3,
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        id: 4,
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }]
+    }
+  },
 }
 </script>
