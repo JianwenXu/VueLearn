@@ -18,11 +18,6 @@
         return this.column.componentInstance;
       }
     },
-    methods: {
-      test() {
-        console.log(this.column);
-      }
-    },
     render() {
       const colProp = this.colComponentOptions.propsData.prop;
       if (colProp) {
