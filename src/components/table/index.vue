@@ -1,27 +1,26 @@
 <template>
   <div>
-    <button @click="test()">测试按钮</button>
-    <table>
-      <thead>
-        <tr>
-          <slot></slot>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="d in data" :key="d.date">
-          <td v-for="col in $slots.default" :key="col.componentOptions.propsData.prop">
-            {{ d[col.componentOptions.propsData.prop] }}
-          </td>
-        </tr>
-      </tbody>
-      <tfoot></tfoot>
-    </table>
+    <button @click="test()">test</button>
+    <div>
+      <slot></slot>
+    </div>
+    <div>
+      <div v-for="(d, idx) in data" :key="d.id || idx">
+        <span v-for="(col, cIdx) in $slots.default" :key="col.id || cIdx">
+          <KCell :data="d" :column="col" />
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import KCell from './cell.vue';
   // todo style, class 怎么传参
   export default {
+    components: {
+      KCell,
+    },
     props: {
       data: {
         type: Array,

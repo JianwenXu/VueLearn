@@ -19,6 +19,13 @@
         prop="address"
         label="地址">
       </KTableColumn>
+      <KTableColumn
+        label="操作"
+        width="100">
+        <template>
+          <a>编辑</a>
+        </template>
+      </KTableColumn>
     </KTable>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <th>{{ label }}</th>
+  <span>{{ label }}</span>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
     props: {
       prop: {
         type: String,
-        required: true
+        default: ''
       },
       label: {
         type: String,
