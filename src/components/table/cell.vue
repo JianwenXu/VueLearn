@@ -1,14 +1,3 @@
-<template>
-  <span>
-    <span v-if="colProp.prop">
-      {{data[colProp.prop]}}
-    </span>
-    <span v-else>
-      其他情况
-    </span>
-  </span>
-</template>
-
 <script>
   export default {
     props: {
@@ -22,10 +11,25 @@
       }
     },
     computed: {
-      colProp() {
-        return this.column.componentOptions.propsData
+      colComponentOptions() {
+        return this.column.componentOptions
       }
     },
+    methods: {
+      test() {
+        console.log(this.column);
+      }
+    },
+    render(h) {
+      const colProp = this.colComponentOptions.propsData.prop;
+      if (colProp) {
+        return (
+          h('span', this.data[colProp])
+        );
+      }
+      const columnChildren = this.colComponentOptions.children;
+      return h('span', null, columnChildren);
+    }
   }
 </script>
 

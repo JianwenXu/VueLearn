@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <!-- <ElTable /> -->
     <h2>自定义 table 组件</h2>
     <KTable
       :data="tableData"
@@ -23,6 +24,7 @@
         label="操作"
         width="100">
         <template>
+          <a>查看</a>
           <a>编辑</a>
         </template>
       </KTableColumn>
@@ -32,12 +34,14 @@
 
 <script>
 // @ is an alias to /src
+// import ElTable from '@/components/elTable/index.vue';
 import KTable from '@/components/table/index.vue';
 import KTableColumn from '@/components/table/column.vue';
 
 export default {
   name: 'Home',
   components: {
+    // ElTable,
     KTable,
     KTableColumn
   },

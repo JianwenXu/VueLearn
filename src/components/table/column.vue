@@ -1,5 +1,7 @@
 <template>
-  <span>{{ label }}</span>
+  <span>
+    {{ label }}
+  </span>
 </template>
 
 <script>
@@ -13,7 +15,7 @@
         type: String,
         default: ''
       }
-    },
+    }
   }
 </script>
 

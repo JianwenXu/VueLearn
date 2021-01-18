@@ -29,7 +29,7 @@
     },
     methods: {
       test() {
-        console.log(this.$slots);
+        console.log(this.$slots.default);
       }
     },
   }
