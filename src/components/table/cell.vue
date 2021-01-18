@@ -13,6 +13,9 @@
     computed: {
       colComponentOptions() {
         return this.column.componentOptions
+      },
+      colComponentInstance() {
+        return this.column.componentInstance;
       }
     },
     methods: {
@@ -27,8 +30,13 @@
           h('span', this.data[colProp])
         );
       }
-      const columnChildren = this.colComponentOptions.children;
-      return h('span', null, columnChildren);
+
+      const scopedSlots = this.colComponentInstance.$scopedSlots
+      return h('span', [
+        scopedSlots.default({
+          scope: this.data
+        })
+      ]);
     }
   }
 </script>

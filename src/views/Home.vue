@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <!-- <ElTable /> -->
     <h2>自定义 table 组件</h2>
     <KTable
       :data="tableData"
@@ -23,9 +22,10 @@
       <KTableColumn
         label="操作"
         width="100">
-        <template>
-          <a>查看</a>
-          <a>编辑</a>
+        <!-- <template> -->
+        <template v-slot:default="slotProps">
+          <a @click="handleView(slotProps)">查看</a>
+          <a @click="handleEdit(slotProps)">编辑</a>
         </template>
       </KTableColumn>
     </KTable>
@@ -34,14 +34,12 @@
 
 <script>
 // @ is an alias to /src
-// import ElTable from '@/components/elTable/index.vue';
 import KTable from '@/components/table/index.vue';
 import KTableColumn from '@/components/table/column.vue';
 
 export default {
   name: 'Home',
   components: {
-    // ElTable,
     KTable,
     KTableColumn
   },
@@ -67,7 +65,15 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+    }
+  },
+  methods: {
+    handleView(scope) {
+      console.log('查看', scope);
+    },
+    handleEdit(scope) {
+      console.log('编辑', scope);
     }
   },
 }

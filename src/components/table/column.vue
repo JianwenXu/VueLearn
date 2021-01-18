@@ -1,9 +1,3 @@
-<template>
-  <span>
-    {{ label }}
-  </span>
-</template>
-
 <script>
   export default {
     props: {
@@ -15,6 +9,9 @@
         type: String,
         default: ''
       }
+    },
+    render(h) {
+      return h('span', this.label);
     }
   }
 </script>
