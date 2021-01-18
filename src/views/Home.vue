@@ -4,15 +4,18 @@
     <KTable
       :data="tableData"
       style="width: 100%"
+      :default-sort = "{prop: 'date', order: 'descending'}"
     >
       <KTableColumn
         prop="date"
         label="日期"
+        sortable
         width="180">
       </KTableColumn>
       <KTableColumn
         prop="name"
         label="姓名"
+        sortable
         width="180">
       </KTableColumn>
       <KTableColumn
@@ -48,24 +51,24 @@ export default {
       tableData: [{
         id: 1,
         date: '2016-05-02',
-        name: '王小虎',
+        name: '王小虎1',
         address: '上海市普陀区金沙江路 1518 弄'
       }, {
         id: 2,
         date: '2016-05-04',
-        name: '王小虎',
+        name: '王小虎2',
         address: '上海市普陀区金沙江路 1517 弄'
       }, {
         id: 3,
         date: '2016-05-01',
-        name: '王小虎',
+        name: '王小虎3',
         address: '上海市普陀区金沙江路 1519 弄'
       }, {
         id: 4,
         date: '2016-05-03',
-        name: '王小虎',
+        name: '王小虎4',
         address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      }]
     }
   },
   methods: {
