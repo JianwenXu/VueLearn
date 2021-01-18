@@ -10,12 +10,19 @@
         default: ''
       }
     },
-    render(h) {
-      return h('span', this.label);
+    render() {
+      return (
+        <span class="thead">
+          {this.label}
+        </span>
+      );
     }
   }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+  .thead {
+    font-weight: bold;
+    padding: 10px 20px;
+  }
 </style>

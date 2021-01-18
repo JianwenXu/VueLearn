@@ -23,24 +23,31 @@
         console.log(this.column);
       }
     },
-    render(h) {
+    render() {
       const colProp = this.colComponentOptions.propsData.prop;
       if (colProp) {
         return (
-          h('span', this.data[colProp])
+          <span class="cell">{this.data[colProp]}</span>
         );
       }
 
       const scopedSlots = this.colComponentInstance.$scopedSlots
-      return h('span', [
-        scopedSlots.default({
-          scope: this.data
-        })
-      ]);
+      return (
+        <span class="cell">
+          {[
+            scopedSlots.default({
+              scope: this.data
+            })
+          ]}
+        </span>
+      )
     }
   }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+  .cell {
+    display: inline-block;
+    padding: 10px 20px;
+  }
 </style>
