@@ -7,6 +7,14 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+Vue.mixin({
+  methods: {
+    globalTest() {
+      console.log('全局混入测试');
+    }
+  },
+})
+
 new Vue({
   router,
   store,
